@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie de Photos Interactive</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            text-align:center; margin-bottom: 24px;
+            padding: 22px; background-color: rgba(255,255,255,0.92);
+            border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+        }
+        h1 { color:#2c3e50; margin-bottom: 8px; font-size:2rem; }
+        .description { color:#6b7280; max-width:900px; margin: 0 auto; font-size:1rem; }
+        .gallery-container { display:flex; flex-direction:column; gap:20px; margin-top:18px; }
+
+        .main-display { background: rgba(255,255,255,0.95); border-radius:12px; padding:18px; box-shadow:0 6px 15px rgba(0,0,0,0.06); }
+        .main-image-container { text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; min-height:360px; justify-content:center; }
+        .main-image {
+            width:100%; max-width:900px; height:380px; background-size:cover; background-position:center; border-radius:8px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.12);
+        }
+        .main-text {
+            font-size:1.1rem; color:#fff; background:#2563eb; padding:10px 18px; border-radius:999px; display:inline-block;
+        }
+        .image-counter { color:#6b7280; font-size:.95rem; margin-top:6px; }
+
+        .thumbnails { background: rgba(255,255,255,0.95); border-radius:12px; padding:18px; box-shadow:0 6px 15px rgba(0,0,0,0.06); }
+        .thumbnail-container {
+            display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:14px;
+        }
+        figure.thumb {
+            background:transparent; border-radius:8px; padding:6px; text-align:center; border:2px solid transparent;
+            transition: transform .18s ease;
+        }
+        img.thumbnail {
+            width:100%; height:140px; object-fit:cover; border-radius:8px; display:block; cursor:pointer;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+            box-shadow:0 4px 8px rgba(0,0,0,0.06);
+        }
+        figure.thumb:focus-within,
+        figure.thumb:hover {
+            transform: translateY(-4px);
+        }
+        figure.thumb:focus {
+            outline: 4px solid rgba(37,99,235,0.18);
+            border-color: #2563eb;
+        }
+        figcaption { margin-top:8px; font-size:.92rem; color:#374151; }
+
+        footer { text-align:center; margin-top:20px; color:#6b7280; font-size:.9rem; padding:12px; border-radius:8px; }
+
+        @media (max-width:768px) {
+            .main-image { height:260px; }
+            img.thumbnail { height:120px; }
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Galerie de Photos Interactive</h1>
+            <p class="description">Une galerie accessible — navigation souris & clavier.</p>
+        </header>
+
+        <main class="gallery-container">
+            <section class="main-display" aria-labelledby="main-display-title">
+                <h2 id="main-display-title" class="sr-only">Image mise en avant</h2>
+                <div class="main-image-container" aria-live="polite" aria-atomic="true">
+                    <div id="featured-image" class="main-image" role="img" aria-label="Image mise en avant - aucune image sélectionnée"></div>
+                    <p id="featured-text" class="main-text">Survolez ou sélectionnez une image pour voir les détails</p>
+                    <div id="image-counter" class="image-counter">0 / 6</div>
+                </div>
+            </section>
+
+            <section class="thumbnails" aria-labelledby="thumbnails-title">
+                <h2 id="thumbnails-title" class="sr-only">Miniatures</h2>
+
+                <div class="thumbnail-container" id="thumbnail-container">
+                    <figure class="thumb">
+                        <img src="images/1.avif" alt="Paysage montagneux avec un lac au coucher du soleil" class="thumbnail" data-large="images/11.avif">
+                        <figcaption>Montagnes - coucher de soleil</figcaption>
+                    </figure>
+
+                    <figure class="thumb">
+                        <img src="images/2.avif" alt="Forêt brumeuse avec des arbres et de la végétation dense" class="thumbnail" data-large="images/22.avif">
+                        <figcaption>Forêt brumeuse</figcaption>
+                    </figure>
+
+                    <figure class="thumb">
+                        <img src="images/3.avif" alt="Plage tropicale avec des palmiers et une mer turquoise" class="thumbnail" data-large="images/33.avif">
+                        <figcaption>Plage tropicale</figcaption>
+                    </figure>
+
+                    <figure class="thumb">
+                        <img src="images/4.avif" alt="Vue aérienne d'une ville la nuit avec des lumières brillantes" class="thumbnail" data-large="images/44.avif">
+                        <figcaption>Ville la nuit</figcaption>
+                    </figure>
+
+                    <figure class="thumb">
+                        <img src="images/5.avif" alt="Paysage désertique avec des dunes de sable et un ciel bleu" class="thumbnail" data-large="images/55.avif">
+                        <figcaption>Dunes désertiques</figcaption>
+                    </figure>
+
+                    <figure class="thumb">
+                        <img src="images/6.avif" alt="Forêt de conifères enneigée par une journée d'hiver" class="thumbnail" data-large="images/66.avif">
+                        <figcaption>Forêt enneigée</figcaption>
+                    </figure>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Projet final - Galerie de Photos Interactive et Accessible — Haitam Elhaoukali</p>
+        </footer>
+    </div>
+
+    <script>
+    function initGallery() {
+        console.log('initGallery onload fired');
+
+        const thumbs = document.querySelectorAll('figure.thumb');
+        const featured = document.getElementById('featured-image');
+        const featuredText = document.getElementById('featured-text');
+        const counter = document.getElementById('image-counter');
+
+        if (!thumbs || thumbs.length === 0) {
+            console.warn('Aucune miniature trouvée.');
+            return;
+        }
+
+        for (let i = 0; i < thumbs.length; i++) {
+            const fig = thumbs[i];
+            const img = fig.querySelector('img.thumbnail');
+            const captionEl = fig.querySelector('figcaption');
+            const captionText = captionEl ? captionEl.textContent.trim() : (img.alt || 'Image');
+
+            fig.setAttribute('tabindex', '0');
+
+            fig.addEventListener('mouseover', function() {
+                const large = img.getAttribute('data-large') || img.src;
+                updateFeatured(large, captionText, i + 1);
+            });
+
+            fig.addEventListener('mouseleave', function() {
+                resetFeatured();
+            });
+
+            fig.addEventListener('focus', function() {
+                const large = img.getAttribute('data-large') || img.src;
+                updateFeatured(large, captionText, i + 1);
+            });
+
+            fig.addEventListener('blur', function() {
+                resetFeatured();
+            });
+
+            fig.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const large = img.getAttribute('data-large') || img.src;
+                    updateFeatured(large, captionText, i + 1);
+                }
+            });
+
+            fig.addEventListener('click', function() {
+                const large = img.getAttribute('data-large') || img.src;
+                updateFeatured(large, captionText, i + 1);
+            });
+        }
+
+        function updateFeatured(url, caption, idx) {
+            featured.style.backgroundImage = url ? `url('${url}')` : '';
+            if (featured && featured.getAttribute) {
+                featured.setAttribute('aria-label', 'Image mise en avant : ' + (caption || 'image'));
+            }
+            featuredText.textContent = caption || '';
+            counter.textContent = (idx ? idx : 0) + ' / ' + thumbs.length;
+        }
+
+        function resetFeatured() {
+            featured.style.backgroundImage = '';
+            featured.setAttribute('aria-label', 'Image mise en avant - aucune image sélectionnée');
+            featuredText.textContent = 'Survolez ou sélectionnez une image pour voir les détails';
+            counter.textContent = '0 / ' + thumbs.length;
+        }
+    }
+
+    window.addEventListener('load', initGallery);
+    </script>
+</body>
+</html>
